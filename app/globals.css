@@ -1,0 +1,357 @@
+@import "tailwindcss";
+
+/* ───────────────────────── Dizajn tokeni (sekcija 2) ───────────────────────── */
+@theme {
+  --color-bg: #fff8f5;
+  --color-surface: #ffffff;
+  --color-ink: #512617;
+  --color-ink-2: #7a4d3f;
+  --color-heading: #993c1d;
+  --color-primary: #bd4620;
+  --color-primary-hover: #a33a19;
+  --color-accent: #d85a30;
+  --color-soft: #fde9e1;
+  --color-soft-2: #f5c4b3;
+  --color-border: #efd8cf;
+  --color-divider: #f4e4dd;
+  --color-grid: #f2e1da;
+  --color-placeholder: #a88274;
+  --color-income: #4f9d77;
+  --color-income-text: #3f8463;
+  --color-income-strong: #2f6e50;
+  --color-income-soft: #e3f3e9;
+  --color-expense: #c96b62;
+  --color-expense-text: #b4574e;
+  --color-expense-strong: #9e4a42;
+  --color-expense-soft: #f8e4e1;
+  --color-warn: #9a6a1f;
+  --color-warn-soft: #fbefd9;
+  --color-gold: #e6aa4e;
+  --color-toast: #512617;
+  --color-overlay: rgba(81, 38, 23, 0.32);
+
+  --font-sans: var(--font-instrument), "Helvetica Neue", Helvetica, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+
+  --radius-card: 24px;
+  --radius-section: 20px;
+  --radius-control: 12px;
+  --radius-tile: 12px;
+
+  --shadow-card: 0 1px 2px rgba(81, 38, 23, 0.04);
+  --shadow-card-hover: 0 16px 32px -20px rgba(153, 60, 29, 0.3);
+  --shadow-popover: 0 24px 48px -24px rgba(81, 38, 23, 0.35);
+  --shadow-modal: 0 30px 60px -30px rgba(81, 38, 23, 0.45);
+  --shadow-segment: 0 1px 3px rgba(153, 60, 29, 0.18);
+  --shadow-cta: 0 14px 28px -14px rgba(189, 70, 32, 0.6);
+
+  /* Aplikacija: tb ≥ 760px, dk ≥ 1100px. Landing meni: nav ≥ 1000px. Prijava: auth ≥ 980px.
+     U rem jedinicama da se pravilno sortiraju s ugrađenim breakpointima. */
+  --breakpoint-tb: 47.5rem;
+  --breakpoint-authapp: 60rem;
+  --breakpoint-auth: 61.25rem;
+  --breakpoint-nav: 62.5rem;
+  --breakpoint-dk: 68.75rem;
+
+  --ease-bar: cubic-bezier(0.3, 0.7, 0.3, 1);
+
+  --animate-fz-in: fzIn 0.3s ease-out both;
+  --animate-fz-pop: fzPop 0.26s cubic-bezier(0.3, 0.7, 0.3, 1) both;
+  --animate-fz-fade: fzFade 0.2s ease-out both;
+  --animate-fz-shim: fzShim 1.3s linear infinite;
+  --animate-fz-float: fzFloat 5s ease-in-out infinite;
+  --animate-fz-spin: fzSpin 0.7s linear infinite;
+
+  @keyframes fzIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fzPop {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fzFade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fzShim {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+  @keyframes fzFloat {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes fzSpin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+/* ───────────────────────── Osnova ───────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-soft-2);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  ::placeholder {
+    color: var(--color-placeholder);
+    opacity: 1;
+  }
+
+  button,
+  [role="button"],
+  summary,
+  label[for],
+  select {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  input:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+
+  input,
+  select,
+  textarea {
+    accent-color: var(--color-primary);
+  }
+
+  /* Preglednikove ikonice za datum/mjesec u boji brenda */
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="month"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 1;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    background: var(--color-ink-2);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M208 32h-24v-8a8 8 0 0 0-16 0v8H88v-8a8 8 0 0 0-16 0v8H48a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16ZM72 48v8a8 8 0 0 0 16 0v-8h80v8a8 8 0 0 0 16 0v-8h24v32H48V48Zm136 160H48V96h160v112Z'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M208 32h-24v-8a8 8 0 0 0-16 0v8H88v-8a8 8 0 0 0-16 0v8H48a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16ZM72 48v8a8 8 0 0 0 16 0v-8h80v8a8 8 0 0 0 16 0v-8h24v32H48V48Zm136 160H48V96h160v112Z'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover,
+  input[type="month"]::-webkit-calendar-picker-indicator:hover {
+    background: var(--color-accent);
+  }
+  input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+  input[type="month"]::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+  input::-webkit-datetime-edit-text {
+    color: var(--color-placeholder);
+  }
+  input::-webkit-datetime-edit-day-field:focus,
+  input::-webkit-datetime-edit-month-field:focus,
+  input::-webkit-datetime-edit-year-field:focus {
+    background: var(--color-soft);
+    color: var(--color-ink);
+    border-radius: 4px;
+  }
+
+  /* Autofill ne smije prebojiti polje u plavo/žuto */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-ink);
+    box-shadow: 0 0 0 1000px var(--color-surface) inset;
+    caret-color: var(--color-ink);
+  }
+  input[type="password"]::-ms-reveal {
+    display: none;
+  }
+}
+
+/* ───────────────────────── Tipografske pomoćne klase ───────────────────────── */
+@utility font-display {
+  font-family: var(--font-display);
+  font-variation-settings:
+    "SOFT" 50,
+    "WONK" 0;
+  font-optical-sizing: auto;
+}
+
+/* Iznosi: Instrument Sans 700, tabelarne cifre */
+@utility amount {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility skeleton {
+  background: linear-gradient(90deg, #fbede7 0%, #fff6f2 50%, #fbede7 100%);
+  background-size: 200% 100%;
+  animation: var(--animate-fz-shim);
+  border-radius: 8px;
+}
+
+/* ───────────────────────── Polja forme ───────────────────────── */
+@layer components {
+  .fz-field {
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font: inherit;
+    font-size: 15px;
+    line-height: 1.2;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s,
+      background-color 0.15s;
+  }
+  .fz-field:hover:not(:disabled):not(:focus) {
+    border-color: var(--color-soft-2);
+  }
+  .fz-field:focus,
+  .fz-field:focus-visible {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-soft);
+  }
+  .fz-field[aria-invalid="true"] {
+    border-color: var(--color-expense);
+  }
+  .fz-field[aria-invalid="true"]:focus {
+    box-shadow: 0 0 0 3px var(--color-expense-soft);
+  }
+  .fz-field:disabled {
+    background: var(--color-bg);
+    color: var(--color-placeholder);
+  }
+  select.fz-field {
+    appearance: none;
+    padding-right: 40px;
+  }
+
+  .fz-check {
+    appearance: none;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    border: 1.5px solid var(--color-soft-2);
+    border-radius: 6px;
+    background: var(--color-surface);
+    cursor: pointer;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s;
+  }
+  .fz-check:hover:not(:disabled) {
+    border-color: var(--color-accent);
+  }
+  .fz-check:checked {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  .fz-check:checked:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+  }
+  .fz-check[aria-invalid="true"]:not(:checked) {
+    border-color: var(--color-expense);
+  }
+  .fz-check:disabled {
+    opacity: 0.5;
+  }
+  .fz-check + svg {
+    opacity: 0;
+    transform: scale(0.6);
+    transition:
+      opacity 0.12s,
+      transform 0.12s;
+  }
+  .fz-check:checked + svg {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ───────────────────────── Smanjeno kretanje ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}

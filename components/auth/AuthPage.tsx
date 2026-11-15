@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/Button";
 import { Checkbox, TextField } from "@/components/ui/Field";
 import { Segmented } from "@/components/ui/Segmented";
 import { cn } from "@/lib/cn";
+import { flashToast } from "@/lib/download";
 import { skm } from "@/lib/format";
 import { useFiluza } from "@/lib/store";
 import {
@@ -324,7 +325,11 @@ function LoginForm({ email, setEmail, go }: FormProps) {
     if (hasErrors(errs)) return;
     run(() => {
       if (password.length < 6) setBanner("Email ili lozinka nisu tačni. Pokušaj ponovo.");
-      else router.push("/app");
+      else {
+        useFiluza.setState({ screen: "pregled" });
+        flashToast("Dobro došao nazad!");
+        router.push("/app");
+      }
     });
   }
 
@@ -445,6 +450,8 @@ function RegisterForm({ email, setEmail, go }: FormProps) {
     if (hasErrors(errs)) return;
     run(() => {
       setProfile({ ime: firstName.trim(), prezime: lastName.trim(), email: email.trim() });
+      useFiluza.setState({ screen: "pregled" });
+      flashToast("Račun je kreiran. Dobro došao u Filuzu!");
       router.push("/app");
     });
   }

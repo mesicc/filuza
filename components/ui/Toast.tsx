@@ -1,8 +1,10 @@
 "use client";
 
 import { CheckCircle, WarningCircle } from "@phosphor-icons/react/dist/ssr";
+import { usePathname } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { takeFlash } from "@/lib/download";
 
 type Tone = "ok" | "error";
 interface ToastItem {
@@ -32,6 +34,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
+
+  // Toast najavljen prije prelaska na drugu stranicu (odjava, prijava, registracija).
+  const pathname = usePathname();
+  useEffect(() => {
+    const text = takeFlash();
+    if (text) show(text);
+  }, [pathname, show]);
 
   return (
     <Ctx.Provider value={show}>

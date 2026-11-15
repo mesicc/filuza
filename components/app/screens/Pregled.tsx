@@ -1,20 +1,16 @@
 "use client";
 
-import { ArrowRight, CaretLeft, CaretRight, Plus } from "@phosphor-icons/react/dist/ssr";
+import { Plus } from "@phosphor-icons/react/dist/ssr";
 import { useMemo } from "react";
 import { BarLineChart } from "@/components/charts/BarLineChart";
-import type { ChartColumn } from "@/components/charts/BarLineChart";
 import { Donut } from "@/components/charts/Donut";
-import { Button, IconButton } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { Segmented } from "@/components/ui/Segmented";
 import { Card, IconTile, ProgressBar } from "@/components/ui/primitives";
 import {
-  anchorIn,
   balanceAt,
   budgetsFor,
   byNewest,
-  canNext,
-  canPrev,
   catOf,
   hasToday,
   inRange,
@@ -29,12 +25,15 @@ import {
   usedPct,
 } from "@/lib/calc";
 import { cn } from "@/lib/cn";
-import { DAYS_SHORT, MIN_DATE, MONTHS, MONTHS_SHORT, TODAY, addDays, daysInMonth, parts, toDate } from "@/lib/dates";
+import { buildColumns } from "@/lib/columns";
+import { MONTHS, TODAY, daysInMonth, parts } from "@/lib/dates";
 import { km, kmS, nkm, pctS, round2, skm, vocative } from "@/lib/format";
 import { Icon } from "@/lib/icons";
 import { useBudgets, useCats, useFiluza, useFmt, useTxs } from "@/lib/store";
 import type { PMode, Transaction, TxPeriod } from "@/lib/types";
 import { useGrow } from "@/lib/useGrow";
+import { Kpi, changeChip } from "../Kpi";
+import { PeriodNav } from "../PeriodNav";
 import { ScreenHeader } from "../ScreenHeader";
 import { CardHead, EmptyState, FirstTxEmpty, LinkButton, TypeChip, amountTone, budgetTone } from "../common";
 
@@ -50,7 +49,6 @@ const WORDS: Record<PMode, { title: string; thisP: string; prevGen: string; prev
   year: { title: "Tvoj godišnji pregled", thisP: "ovu godinu", prevGen: "prethodne godine", prev: "prethodna godina" },
 };
 
-const pad = (n: number) => String(n).padStart(2, "0");
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const TWO_COL = "grid gap-5 dk:grid-cols-[1.65fr_1fr]";
 
@@ -107,68 +105,11 @@ function Dashboard({ txs, mode }: { txs: Transaction[]; mode: PMode }) {
       .map(([id, amount]) => ({ id, amount: round2(amount), cat: catOf(cats, id) }))
       .sort((a, b) => b.amount - a.amount);
 
-    // Zbirovi po danu i po mjesecu za grafikon
-    const daySum = new Map<string, { inc: number; exp: number }>();
-    for (const x of txs) {
-      const keys = mode === "year" ? [x.date.slice(0, 7)] : [x.date];
-      for (const k of keys) {
-        const s = daySum.get(k) ?? { inc: 0, exp: 0 };
-        if (x.type === "prihod") s.inc += x.amount;
-        else s.exp += x.amount;
-        daySum.set(k, s);
-      }
-    }
-    const sum = (k: string) => {
-      const s = daySum.get(k);
-      return { inc: round2(s?.inc ?? 0), exp: round2(s?.exp ?? 0) };
-    };
-
-    return { cur, prev, t, p, catRows, sum, prevP };
+    return { cur, prev, t, p, catRows, prevP };
   }, [txs, cats, mode, anchor, period.start, period.end]);
 
   /* ───────── Stupci grafikona ───────── */
-  const columns: ChartColumn[] = useMemo(() => {
-    if (mode === "day") {
-      return Array.from({ length: 7 }, (_, i) => {
-        const date = addDays(anchor, i - 6);
-        return {
-          key: date,
-          label: `${DAYS_SHORT[toDate(date).getDay()]} ${parts(date).d}`,
-          title: fmt.long(date),
-          ...d.sum(date),
-          mark: date === anchor,
-          future: date > TODAY,
-        };
-      });
-    }
-    if (mode === "month") {
-      const n = daysInMonth(y, m);
-      return Array.from({ length: n }, (_, i) => {
-        const day = i + 1;
-        const date = `${y}-${pad(m)}-${pad(day)}`;
-        return {
-          key: date,
-          label: String(day),
-          hideLabel: n > 16 && !(day === 1 || day % 5 === 0),
-          title: fmt.long(date),
-          ...d.sum(date),
-          mark: date === TODAY,
-          future: date > TODAY,
-        };
-      });
-    }
-    return MONTHS_SHORT.map((short, i) => {
-      const key = `${y}-${pad(i + 1)}`;
-      return {
-        key,
-        label: short,
-        title: `${MONTHS[i]} ${y}`,
-        ...d.sum(key),
-        mark: key === TODAY.slice(0, 7),
-        future: key > TODAY.slice(0, 7),
-      };
-    });
-  }, [mode, anchor, y, m, d, fmt]);
+  const columns = useMemo(() => buildColumns(txs, { kind: mode, anchor }, fmt.long), [txs, mode, anchor, fmt]);
 
   const dim = daysInMonth(y, m);
   const perColumn = plan.show
@@ -180,15 +121,6 @@ function Dashboard({ txs, mode }: { txs: Transaction[]; mode: PMode }) {
   const planInc = round2(plan.inc * scale);
   const planExp = round2(plan.exp * scale);
 
-  /* ───────── Navigacija perioda ───────── */
-  const prevOk = canPrev(mode, anchor);
-  const nextOk = canNext(mode, anchor);
-  const years = Array.from({ length: parts(TODAY).y - parts(MIN_DATE).y + 1 }, (_, i) => parts(MIN_DATE).y + i);
-  const pick = (date: string) => {
-    if (!date || date < MIN_DATE.slice(0, date.length) || date > TODAY) return;
-    setAnchor(anchorIn(mode, date));
-  };
-
   const seeAll = () => {
     const map: Record<PMode, TxPeriod> = { day: "danas", month: "mjesec", year: "godina" };
     resetTxFilter();
@@ -198,17 +130,7 @@ function Dashboard({ txs, mode }: { txs: Transaction[]; mode: PMode }) {
 
   /* ───────── KPI ───────── */
   const balance = balanceAt(txs);
-  const chip = (cur: number, prev: number, upIsGood: boolean) => {
-    const v = pctChange(cur, prev);
-    if (v === null) return null;
-    const up = v >= 0;
-    return {
-      text: signedPct(v),
-      up,
-      good: up === upIsGood || v === 0,
-      title: `${up ? "Više" : "Manje"} nego ${w.prevGen}`,
-    };
-  };
+  const chip = (cur: number, prev: number, upIsGood: boolean) => changeChip(cur, prev, upIsGood, w.prevGen);
 
   /* ───────── Statistika ───────── */
   const stats: { label: string; value: string; sub: string }[] = [];
@@ -297,69 +219,7 @@ function Dashboard({ txs, mode }: { txs: Transaction[]; mode: PMode }) {
         </div>
 
         <div className="flex w-full flex-wrap items-center gap-2 tb:w-auto">
-          <div className="flex w-full min-w-0 items-center gap-2 tb:w-auto">
-            <IconButton
-              bordered
-              size={44}
-              label="Prethodni period"
-              disabled={!prevOk}
-              onClick={() => setAnchor(shiftAnchor(mode, anchor, -1))}
-            >
-              <CaretLeft size={18} aria-hidden="true" />
-            </IconButton>
-            {mode === "day" && (
-              <input
-                type="date"
-                aria-label="Odaberi dan"
-                className="fz-field h-11 min-w-0 flex-1 tb:w-[168px] tb:flex-none"
-                min={MIN_DATE}
-                max={TODAY}
-                value={anchor}
-                onChange={(e) => pick(e.target.value)}
-              />
-            )}
-            {mode === "month" && (
-              <input
-                type="month"
-                aria-label="Odaberi mjesec"
-                className="fz-field h-11 min-w-0 flex-1 tb:w-[190px] tb:flex-none"
-                min={MIN_DATE.slice(0, 7)}
-                max={TODAY.slice(0, 7)}
-                value={anchor.slice(0, 7)}
-                onChange={(e) => /^\d{4}-\d{2}$/.test(e.target.value) && pick(`${e.target.value}-01`)}
-              />
-            )}
-            {mode === "year" && (
-              <div className="relative min-w-0 flex-1 tb:w-[120px] tb:flex-none">
-                <select
-                  aria-label="Odaberi godinu"
-                  className="fz-field tnum h-11"
-                  value={y}
-                  onChange={(e) => setAnchor(anchorIn("year", `${e.target.value}-01-01`))}
-                >
-                  {years.map((yy) => (
-                    <option key={yy} value={yy}>
-                      {yy}
-                    </option>
-                  ))}
-                </select>
-                <Icon
-                  name="chevron-right"
-                  size={16}
-                  className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 rotate-90 text-ink-2"
-                />
-              </div>
-            )}
-            <IconButton
-              bordered
-              size={44}
-              label="Sljedeći period"
-              disabled={!nextOk}
-              onClick={() => setAnchor(shiftAnchor(mode, anchor, 1))}
-            >
-              <CaretRight size={18} aria-hidden="true" />
-            </IconButton>
-          </div>
+          <PeriodNav mode={mode} anchor={anchor} onChange={setAnchor} className="w-full tb:w-auto" />
           {!today && (
             <Button variant="secondary" onClick={() => setAnchor(TODAY)}>
               Danas
@@ -555,7 +415,7 @@ function Dashboard({ txs, mode }: { txs: Transaction[]; mode: PMode }) {
                             <button
                               type="button"
                               aria-label={`Uredi ${t.name}`}
-                              className="block max-w-full truncate rounded-[4px] text-left font-semibold text-ink"
+                              className="-my-1.5 block min-h-8 max-w-full truncate rounded-[4px] text-left font-semibold text-ink"
                             >
                               {t.name}
                             </button>
@@ -679,50 +539,6 @@ function Dashboard({ txs, mode }: { txs: Transaction[]; mode: PMode }) {
 }
 
 /* ───────────────────────── Dijelovi ───────────────────────── */
-
-function Kpi({
-  title,
-  icon,
-  color,
-  value,
-  tone,
-  desc,
-  chip,
-}: {
-  title: string;
-  icon: string;
-  color: string;
-  value: string;
-  tone: string;
-  desc: string;
-  chip?: { text: string; up: boolean; good: boolean; title: string } | null;
-}) {
-  return (
-    <Card lift className="min-w-0">
-      <div className="flex items-start justify-between gap-3">
-        <h2 className="pt-2.5 text-[14px] leading-5 font-medium text-ink-2">{title}</h2>
-        <IconTile icon={icon} color={color} size={40} />
-      </div>
-      <p className={cn("amount mt-2 text-[clamp(24px,2.3vw,30px)] leading-[1.15]", tone)}>{value}</p>
-      <div className="mt-2.5 flex min-h-6 flex-wrap items-center gap-x-2.5 gap-y-1.5">
-        <p className="text-[13px] leading-[18px] text-ink-2">{desc}</p>
-        {chip && (
-          <span
-            title={chip.title}
-            className={cn(
-              "tnum inline-flex h-6 items-center gap-1 rounded-full pr-2.5 pl-2 text-[12px] font-semibold",
-              chip.good ? "bg-income-soft text-income-strong" : "bg-expense-soft text-expense-strong",
-            )}
-          >
-            <Icon name={chip.up ? "trending-up" : "trending-down"} size={16} />
-            {chip.text}
-            <span className="sr-only">. {chip.title}</span>
-          </span>
-        )}
-      </div>
-    </Card>
-  );
-}
 
 function PlanCard({
   title,

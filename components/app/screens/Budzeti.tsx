@@ -78,7 +78,11 @@ export function Budzeti() {
             <EmptyState
               icon="piggy-bank"
               title="Još nemaš postavljen budžet."
-              text="Kreiraj svoj prvi budžet i odredi koliko želiš potrošiti ovog mjeseca."
+              text={
+                month === TODAY.slice(0, 7)
+                  ? "Kreiraj svoj prvi budžet i odredi koliko želiš potrošiti ovog mjeseca."
+                  : undefined
+              }
               action={create}
             />
           </Card>

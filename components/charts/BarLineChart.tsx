@@ -3,23 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { GRID_STEPS, kS, km, niceMax, nkm } from "@/lib/format";
+import type { ChartColumn } from "@/lib/columns";
 import { useGrow } from "@/lib/useGrow";
 
-export interface ChartColumn {
-  key: string;
-  /** Oznaka ispod stupca. */
-  label: string;
-  /** Sakrij oznaku (npr. prikazuje se svaka peta). */
-  hideLabel?: boolean;
-  /** Naslov tooltipa i aria-label (npr. „Petak, 06.11.2026.“). */
-  title: string;
-  inc: number;
-  exp: number;
-  /** Budući dan/mjesec – blijedi stupci. */
-  future?: boolean;
-  /** Istaknut stupac (današnji / odabrani). */
-  mark?: boolean;
-}
+export type { ChartColumn };
 
 interface Props {
   columns: ChartColumn[];
@@ -196,7 +183,8 @@ export function BarLineChart({ columns, style = "stupci", plan, growKey, label, 
           {/* Tooltip */}
           {cur && (
             <div
-              role="status"
+              aria-hidden="true"
+              data-chart-tooltip
               className={cn(
                 "pointer-events-none absolute top-1 z-10 w-[220px] max-w-full rounded-control border border-border bg-surface p-3 text-left shadow-popover animate-fz-fade",
                 align === "center" && "-translate-x-1/2",

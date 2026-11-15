@@ -54,7 +54,7 @@ export function LinkButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "-mx-2 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-[10px] px-2 text-[14px] font-semibold text-primary transition-colors duration-150",
+        "-mx-2 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-[10px] px-2 text-[14px] font-semibold text-primary transition-colors duration-150 max-tb:h-11",
         "hover:bg-soft hover:text-primary-hover active:bg-soft-2/60 disabled:text-placeholder disabled:hover:bg-transparent",
         className,
       )}

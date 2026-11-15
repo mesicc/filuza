@@ -74,7 +74,7 @@ export function Segmented<T extends string>({
               : { "aria-pressed": active })}
             onClick={() => onChange(o.value)}
             className={cn(
-              "rounded-[10px] font-semibold whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
+              "rounded-[10px] font-semibold whitespace-nowrap transition-[background-color,color,box-shadow] duration-150 max-tb:min-h-11",
               HEIGHT[size],
               block && "flex-1",
               active

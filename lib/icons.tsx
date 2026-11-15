@@ -189,12 +189,13 @@ export type IconKey = keyof typeof ICONS;
 export const isIconKey = (k: string): k is IconKey => k in ICONS;
 
 interface Props extends Omit<IconProps, "ref"> {
-  name: IconKey;
+  /** Ključ iz mape; nepoznat ključ se prikazuje kao `circle-ellipsis`. */
+  name: string;
 }
 
 /** Ikona po ključu. Dekorativna je (aria-hidden) osim ako se proslijedi `aria-label`. */
 export function Icon({ name, size = 18, weight = "regular", ...rest }: Props) {
-  const Cmp = ICONS[name] ?? DotsThreeCircle;
+  const Cmp: PhosphorIcon = isIconKey(name) ? ICONS[name] : DotsThreeCircle;
   const labelled = "aria-label" in rest;
   return <Cmp size={size} weight={weight} aria-hidden={labelled ? undefined : true} {...rest} />;
 }

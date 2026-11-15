@@ -23,7 +23,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const show = useCallback((text: string, tone: Tone = "ok") => {
     if (timer.current) clearTimeout(timer.current);
     setItem({ id: Date.now(), text, tone });
-    timer.current = setTimeout(() => setItem(null), 3200);
+    timer.current = setTimeout(() => setItem(null), 3400);
   }, []);
 
   useEffect(
@@ -36,20 +36,21 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={show}>
       {children}
+      {/* Mobitel: iznad donje navigacije, pune širine. Tablet/desktop: dolje desno. */}
       <div
         role="status"
         aria-live="polite"
-        className="pointer-events-none fixed inset-x-0 bottom-24 z-[120] flex justify-center px-4 tb:bottom-8"
+        className="pointer-events-none fixed inset-x-3 bottom-[92px] z-[120] flex justify-center tb:inset-x-auto tb:right-6 tb:bottom-6"
       >
         {item && (
           <div
             key={item.id}
-            className="pointer-events-auto flex max-w-[440px] items-center gap-2.5 rounded-[14px] bg-toast py-3 pr-4 pl-3.5 text-[14px] font-medium text-white shadow-popover animate-fz-pop"
+            className="pointer-events-auto flex w-full items-center gap-2.5 rounded-[14px] bg-toast py-3 pr-4 pl-3.5 text-[14px] leading-5 font-medium text-white shadow-popover animate-fz-pop tb:w-auto tb:max-w-[420px]"
           >
             {item.tone === "ok" ? (
-              <CheckCircle size={20} aria-hidden="true" className="shrink-0 text-[#9FD8B8]" />
+              <CheckCircle size={20} aria-hidden="true" className="shrink-0 text-[#9FD3B8]" />
             ) : (
-              <WarningCircle size={20} aria-hidden="true" className="shrink-0 text-[#F2B1AA]" />
+              <WarningCircle size={20} aria-hidden="true" className="shrink-0 text-[#F5C4B3]" />
             )}
             <span>{item.text}</span>
           </div>

@@ -65,15 +65,15 @@ export function toISO(date: Date): ISODate {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
-/** `06.11.2026.` */
-export function fmtDate(iso: ISODate): string {
+/** `06.11.2026.` ili, po izboru korisnika, `6. 11. 2026.` */
+export function fmtDate(iso: ISODate, format: "DD.MM.YYYY." | "D. M. YYYY." = "DD.MM.YYYY."): string {
   const { y, m, d } = parts(iso);
-  return `${pad(d)}.${pad(m)}.${y}.`;
+  return format === "D. M. YYYY." ? `${d}. ${m}. ${y}.` : `${pad(d)}.${pad(m)}.${y}.`;
 }
 
 /** `Petak, 06.11.2026.` */
-export function fmtDateLong(iso: ISODate): string {
-  return `${DAYS[toDate(iso).getDay()]}, ${fmtDate(iso)}`;
+export function fmtDateLong(iso: ISODate, format?: "DD.MM.YYYY." | "D. M. YYYY."): string {
+  return `${DAYS[toDate(iso).getDay()]}, ${fmtDate(iso, format)}`;
 }
 
 /** `Novembar 2026` */

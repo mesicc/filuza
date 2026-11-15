@@ -444,7 +444,7 @@ function RegisterForm({ email, setEmail, go }: FormProps) {
     setErrors(errs);
     if (hasErrors(errs)) return;
     run(() => {
-      setProfile({ firstName: firstName.trim(), lastName: lastName.trim(), email: email.trim() });
+      setProfile({ ime: firstName.trim(), prezime: lastName.trim(), email: email.trim() });
       router.push("/app");
     });
   }

@@ -1,7 +1,6 @@
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { Icon } from "@/lib/icons";
-import type { IconKey } from "@/lib/icons";
 
 /* ───────── Card ───────── */
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
@@ -29,16 +28,16 @@ export function Card({ small, lift, flush, className, ...rest }: CardProps) {
 
 /* ───────── Icon tile ───────── */
 interface IconTileProps {
-  icon: IconKey;
+  icon: string;
   /** Boja kategorije (hex, 6 cifara). Podloga je ista boja s alpha `22`. */
   color: string;
-  size?: 28 | 32 | 36 | 40 | 44 | 48 | 52;
+  size?: 28 | 32 | 36 | 40 | 44 | 46 | 48 | 52;
   className?: string;
   style?: CSSProperties;
 }
 
-const TILE_ICON: Record<number, number> = { 28: 16, 32: 16, 36: 18, 40: 20, 44: 20, 48: 24, 52: 24 };
-const TILE_RADIUS: Record<number, number> = { 28: 10, 32: 10, 36: 10, 40: 12, 44: 12, 48: 14, 52: 14 };
+const TILE_ICON: Record<number, number> = { 28: 16, 32: 16, 36: 18, 40: 20, 44: 20, 46: 22, 48: 24, 52: 24 };
+const TILE_RADIUS: Record<number, number> = { 28: 10, 32: 10, 36: 10, 40: 12, 44: 12, 46: 14, 48: 14, 52: 14 };
 
 export function IconTile({ icon, color, size = 40, className, style }: IconTileProps) {
   return (
@@ -77,7 +76,7 @@ export function Chip({
   className,
 }: {
   tone?: ChipTone;
-  icon?: IconKey;
+  icon?: string;
   children: ReactNode;
   className?: string;
 }) {
@@ -102,6 +101,8 @@ interface ProgressProps {
   label: string;
   tone?: "income" | "expense" | "brand";
   color?: string;
+  /** Boja pozadine trake (zadano `soft`). */
+  track?: string;
   height?: number;
   /** `false` drži traku na 0 da bi se animirala pri ulasku. */
   on?: boolean;
@@ -110,7 +111,7 @@ interface ProgressProps {
 
 const TONE = { income: "var(--color-income)", expense: "var(--color-expense)", brand: "var(--color-accent)" };
 
-export function ProgressBar({ value, label, tone = "income", color, height = 8, on = true, className }: ProgressProps) {
+export function ProgressBar({ value, label, tone = "income", color, track, height = 8, on = true, className }: ProgressProps) {
   const v = Math.max(0, Math.min(100, value));
   return (
     <div
@@ -120,7 +121,7 @@ export function ProgressBar({ value, label, tone = "income", color, height = 8, 
       aria-valuemax={100}
       aria-valuenow={Math.round(v)}
       className={cn("w-full overflow-hidden rounded-full bg-soft", className)}
-      style={{ height }}
+      style={{ height, background: track }}
     >
       <div
         className="h-full rounded-full transition-[width] duration-[350ms] ease-bar"

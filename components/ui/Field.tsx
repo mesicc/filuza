@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 export function FieldError({ id, children }: { id: string; children?: ReactNode }) {
   if (!children) return null;
   return (
-    <p id={id} className="mt-1.5 flex items-start gap-1.5 text-[13px] leading-[18px] font-medium text-expense-strong">
+    <p id={id} role="alert" className="mt-1.5 flex items-start gap-1.5 text-[13px] leading-[18px] font-medium text-expense-strong">
       <WarningCircle size={16} aria-hidden="true" className="mt-px shrink-0" />
       <span>{children}</span>
     </p>

@@ -16,11 +16,11 @@ const VARIANTS: Record<ButtonVariant, string> = {
     "bg-surface text-heading border border-border hover:bg-soft hover:border-soft-2 disabled:hover:bg-surface disabled:hover:border-border",
   ghost: "text-heading hover:bg-soft disabled:hover:bg-transparent",
   white: "bg-white text-heading hover:bg-soft",
-  danger: "bg-expense-strong text-white hover:bg-[#8a3f38]",
+  danger: "bg-[#B4574E] text-white hover:bg-expense-strong",
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  sm: "h-9 px-3 text-[14px]",
+  sm: "h-9 px-3 text-[14px] max-tb:h-11",
   md: "h-11 px-[18px] text-[15px]",
   lg: "h-[52px] px-6 text-[16px]",
   xl: "h-[54px] px-7 text-[16px]",
@@ -105,7 +105,7 @@ export function IconButton({ label, size = 40, bordered, className, type = "butt
       aria-label={label}
       title={label}
       className={cn(
-        "inline-grid place-items-center shrink-0 rounded-control text-ink-2 transition-[background-color,color,transform,border-color] duration-150",
+        "inline-grid place-items-center shrink-0 rounded-control text-ink-2 transition-[background-color,color,transform,border-color] duration-150 max-tb:min-h-11 max-tb:min-w-11",
         "hover:bg-soft hover:text-heading active:scale-[.94] disabled:opacity-50 disabled:hover:bg-transparent disabled:active:scale-100",
         bordered && "border border-border bg-surface hover:border-soft-2",
         className,

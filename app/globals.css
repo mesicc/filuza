@@ -15,9 +15,9 @@
   --color-border: #efd8cf;
   --color-divider: #f4e4dd;
   --color-grid: #f2e1da;
-  --color-placeholder: #a88274;
+  --color-placeholder: #8f6b5c;
   --color-income: #4f9d77;
-  --color-income-text: #3f8463;
+  --color-income-text: #3a7d5d;
   --color-income-strong: #2f6e50;
   --color-income-soft: #e3f3e9;
   --color-expense: #c96b62;
@@ -290,6 +290,13 @@
   .fz-field:disabled {
     background: var(--color-bg);
     color: var(--color-placeholder);
+  }
+  textarea.fz-field {
+    height: auto;
+    min-height: 72px;
+    padding: 11px 14px;
+    line-height: 1.45;
+    resize: vertical;
   }
   select.fz-field {
     appearance: none;

@@ -7,17 +7,21 @@ import { Coin, Logo } from "@/components/Logo";
 import { IconButton } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/primitives";
 import { cn } from "@/lib/cn";
+import { flashToast } from "@/lib/download";
 import { Icon } from "@/lib/icons";
 import { useFiluza, useHydrated } from "@/lib/store";
 import type { Screen } from "@/lib/types";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { ModalHost } from "./modals/ModalHost";
 import { AvatarButton, BellButton } from "./HeaderButtons";
 import { NotifPopover } from "./NotifPopover";
 import { Avatar } from "./common";
 import { Budzeti } from "./screens/Budzeti";
 import { Ciljevi } from "./screens/Ciljevi";
 import { Kategorije } from "./screens/Kategorije";
-import { Placeholder } from "./screens/Placeholder";
+import { Izvjestaji } from "./screens/Izvjestaji";
+import { Pomoc } from "./screens/Pomoc";
+import { Postavke } from "./screens/Postavke";
 import { Pregled } from "./screens/Pregled";
 import { Transakcije } from "./screens/Transakcije";
 
@@ -46,7 +50,10 @@ const MORE_SCREENS = new Set<Screen>(MORE.map((m) => m.screen));
 
 function useLogout() {
   const router = useRouter();
-  return () => router.push("/prijava#prijava");
+  return () => {
+    flashToast("Odjavljen si. Vidimo se uskoro!");
+    router.push("/prijava#prijava");
+  };
 }
 
 /* ───────────────────────── Sidebar ───────────────────────── */
@@ -64,11 +71,11 @@ function SideLink({ item, compact }: { item: NavItem; compact: boolean }) {
         "flex h-11 w-full items-center justify-center gap-3 rounded-control px-3 text-[15px] transition-colors duration-150",
         !compact && "dk:justify-start",
         active
-          ? "bg-soft font-bold text-accent"
-          : "font-medium text-ink-2 hover:bg-soft hover:text-primary active:bg-soft-2/60",
+          ? "bg-soft font-bold text-heading"
+          : "font-medium text-ink-2 hover:bg-soft hover:text-heading active:bg-soft-2/60",
       )}
     >
-      <Icon name={item.icon} size={20} weight={active ? "fill" : "regular"} className="shrink-0" />
+      <Icon name={item.icon} size={20} weight={active ? "fill" : "regular"} className={cn("shrink-0", active && "text-accent")} />
       <span className={cn("truncate", compact ? "sr-only" : "sr-only dk:not-sr-only")}>{item.label}</span>
     </button>
   );
@@ -177,13 +184,13 @@ function BottomItem({
       aria-expanded={expanded}
       className={cn(
         "flex h-16 min-w-0 flex-col items-center justify-center gap-0.5 text-[11px] leading-4",
-        active ? "font-bold text-accent" : "font-medium text-ink-2",
+        active ? "font-bold text-heading" : "font-medium text-ink-2",
       )}
     >
       <span
         className={cn(
           "grid h-7 w-11 place-items-center rounded-full transition-colors duration-150",
-          active && "bg-soft",
+          active && "bg-soft text-accent",
         )}
       >
         <Icon name={icon} size={20} weight={active ? "fill" : "regular"} />
@@ -246,7 +253,20 @@ function MoreSheet() {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
     panel.current?.querySelector<HTMLElement>("button")?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") return setOpen(false);
+      if (e.key !== "Tab") return;
+      const items = Array.from(panel.current?.querySelectorAll<HTMLElement>("button") ?? []);
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last?.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first?.focus();
+      }
+    };
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
@@ -280,9 +300,9 @@ function MoreSheet() {
               type="button"
               aria-current={active ? "page" : undefined}
               onClick={() => go(item.screen)}
-              className={cn(row, active ? "bg-soft font-bold text-accent" : "font-medium text-ink hover:bg-soft")}
+              className={cn(row, active ? "bg-soft font-bold text-heading" : "font-medium text-ink hover:bg-soft")}
             >
-              <Icon name={item.icon} size={20} weight={active ? "fill" : "regular"} className={active ? "" : "text-ink-2"} />
+              <Icon name={item.icon} size={20} weight={active ? "fill" : "regular"} className={active ? "text-accent" : "text-ink-2"} />
               {item.label}
             </button>
           );
@@ -329,8 +349,14 @@ function ActiveScreen({ screen }: { screen: Screen }) {
       return <Kategorije />;
     case "ciljevi":
       return <Ciljevi />;
+    case "izvjestaji":
+      return <Izvjestaji />;
+    case "postavke":
+      return <Postavke />;
+    case "pomoc":
+      return <Pomoc />;
     default:
-      return <Placeholder screen={screen} />;
+      return null;
   }
 }
 
@@ -357,6 +383,7 @@ export function AppShell() {
       <BottomNav />
       <MoreSheet />
       <NotifPopover />
+      <ModalHost />
       <ConfirmDialog />
     </div>
   );

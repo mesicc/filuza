@@ -21,6 +21,9 @@ export function NotifPopover() {
 
   useEffect(() => {
     if (!open) return;
+    const prev = document.activeElement as HTMLElement | null;
+    const el = panel.current;
+    el?.focus();
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement;
       if (panel.current?.contains(t) || t.closest("[data-notif-toggle]")) return;
@@ -32,6 +35,7 @@ export function NotifPopover() {
     return () => {
       document.removeEventListener("pointerdown", onDown);
       document.removeEventListener("keydown", onKey);
+      if (el?.contains(document.activeElement) || document.activeElement === document.body) prev?.focus?.();
     };
   }, [open, setOpen]);
 
@@ -43,7 +47,8 @@ export function NotifPopover() {
       id="notifikacije"
       role="dialog"
       aria-label="Notifikacije"
-      className="fixed inset-x-3 top-16 z-50 flex max-h-[70vh] flex-col overflow-hidden rounded-section border border-border bg-surface shadow-popover animate-fz-pop tb:inset-x-auto tb:top-[84px] tb:right-8 tb:w-[380px]"
+      tabIndex={-1}
+      className="fixed inset-x-3 top-16 z-50 flex max-h-[70vh] flex-col overflow-hidden rounded-section border border-border bg-surface shadow-popover outline-none animate-fz-pop tb:inset-x-auto tb:top-[84px] tb:right-8 tb:w-[380px]"
     >
       <div className="flex items-center justify-between gap-3 border-b border-divider py-3 pr-4 pl-[18px]">
         <h2 className="font-display text-[18px] leading-6 font-semibold tracking-[-0.015em] text-ink">Notifikacije</h2>

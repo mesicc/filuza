@@ -26,6 +26,8 @@ export interface FiluzaData {
   profile: Profile;
   prefs: Prefs;
   plan: Plan;
+  /** Je li korisnik prijavljen (demo: prvi start je prijavljen). */
+  signedIn: boolean;
 }
 
 const c = (id: string, name: string, type: TxType, icon: string, color: string): Category => ({
@@ -291,5 +293,6 @@ export function seed(): FiluzaData {
     profile: { ime: "Kemal", prezime: "Hodžić", email: "kemal.hodzic@gmail.com" },
     prefs: { valuta: "KM", jezik: "Bosanski", prviDan: "Ponedjeljak", format: "DD.MM.YYYY." },
     plan: { inc: 2000, exp: 1500, show: true },
+    signedIn: true,
   };
 }

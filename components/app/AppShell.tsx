@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/primitives";
 import { cn } from "@/lib/cn";
 import { flashToast } from "@/lib/download";
 import { Icon } from "@/lib/icons";
-import { useFiluza, useHydrated } from "@/lib/store";
+import { session, signOut, useFiluza, useHydrated } from "@/lib/store";
 import type { Screen } from "@/lib/types";
 import { useScrollLock } from "@/lib/useScrollLock";
 import { ConfirmDialog } from "./ConfirmDialog";
@@ -52,6 +52,7 @@ const MORE_SCREENS = new Set<Screen>(MORE.map((m) => m.screen));
 function useLogout() {
   const router = useRouter();
   return () => {
+    signOut();
     flashToast("Odjavljen si. Vidimo se uskoro!");
     router.push("/prijava#prijava");
   };
@@ -249,8 +250,8 @@ function MoreSheet() {
   const go = useFiluza((s) => s.go);
   const logout = useLogout();
   const panel = useRef<HTMLDivElement>(null);
-
   useScrollLock(open);
+
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
@@ -366,6 +367,16 @@ export function AppShell() {
   const ready = useHydrated();
   const screen = useFiluza((s) => s.screen);
   const loading = useFiluza((s) => s.loading);
+  const signedIn = useFiluza((s) => s.signedIn);
+  const router = useRouter();
+
+  // Bez prijave nema aplikacije: odjavljen korisnik ide na stranicu prijave.
+  useEffect(() => {
+    session.leaving = false;
+  }, []);
+  useEffect(() => {
+    if (ready && !signedIn && !session.leaving) router.replace("/prijava#prijava");
+  }, [ready, signedIn, router]);
 
   return (
     <div className="flex min-h-dvh bg-bg">
@@ -373,7 +384,7 @@ export function AppShell() {
       <div className="min-w-0 flex-1">
         <MobileTop />
         <main className="mx-auto w-full max-w-[1480px] px-4 pt-5 pb-28 tb:p-6 dk:px-10 dk:py-7">
-          {!ready || loading ? (
+          {!ready || !signedIn || loading ? (
             <ScreenSkeleton />
           ) : (
             <div key={screen} className="animate-fz-in">

@@ -104,6 +104,17 @@ export type FiluzaState = FiluzaData & UIState & Actions;
 
 export const STORAGE_KEY = "filuza-v1";
 
+/**
+ * Odjava koja sama vodi na drugu stranicu (odjava, brisanje računa).
+ * Dok je `leaving` postavljen, zaštita prijave u shellu ne preusmjerava drugi put.
+ */
+export const session = { leaving: false };
+
+export function signOut(): void {
+  session.leaving = true;
+  useFiluza.setState({ signedIn: false });
+}
+
 export const DEFAULT_TX_FILTER: TxFilter = {
   type: "sve",
   q: "",
@@ -243,6 +254,7 @@ export const useFiluza = create<FiluzaState>()(
         profile: s.profile,
         prefs: s.prefs,
         plan: s.plan,
+        signedIn: s.signedIn,
       }),
       // Verzija 1 (prije modela podataka) je čuvala samo profil s registracije.
       migrate: (persisted, version) => {

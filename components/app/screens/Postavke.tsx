@@ -12,7 +12,7 @@ import { cn } from "@/lib/cn";
 import { downloadText, flashToast } from "@/lib/download";
 import { km, num, parseAmount, round2 } from "@/lib/format";
 import { Icon } from "@/lib/icons";
-import { useFiluza } from "@/lib/store";
+import { signOut, useFiluza } from "@/lib/store";
 import type { DateFormat, Prefs } from "@/lib/types";
 import { emailError } from "@/lib/validation";
 import { ScreenHeader } from "../ScreenHeader";
@@ -506,6 +506,7 @@ function Account() {
                 destructive: true,
                 onConfirm: () => {
                   useFiluza.getState().resetAll();
+                  signOut();
                   flashToast("Račun je obrisan (demo).");
                   router.push("/prijava#registracija");
                 },

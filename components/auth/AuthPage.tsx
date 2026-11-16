@@ -326,7 +326,7 @@ function LoginForm({ email, setEmail, go }: FormProps) {
     run(() => {
       if (password.length < 6) setBanner("Email ili lozinka nisu tačni. Pokušaj ponovo.");
       else {
-        useFiluza.setState({ screen: "pregled" });
+        useFiluza.setState({ screen: "pregled", signedIn: true });
         flashToast("Dobro došao nazad!");
         router.push("/app");
       }
@@ -450,7 +450,7 @@ function RegisterForm({ email, setEmail, go }: FormProps) {
     if (hasErrors(errs)) return;
     run(() => {
       setProfile({ ime: firstName.trim(), prezime: lastName.trim(), email: email.trim() });
-      useFiluza.setState({ screen: "pregled" });
+      useFiluza.setState({ screen: "pregled", signedIn: true });
       flashToast("Račun je kreiran. Dobro došao u Filuzu!");
       router.push("/app");
     });

@@ -327,7 +327,7 @@ function ScreenSkeleton() {
   return (
     <div aria-busy="true" aria-label="Učitavanje" role="status" className="grid gap-5">
       <Skeleton className="h-16 rounded-section" />
-      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(230px,1fr))]">
+      <div className="grid gap-4 min-[30rem]:grid-cols-2 min-[80rem]:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
           <Skeleton key={i} className="h-[150px] rounded-card" />
         ))}

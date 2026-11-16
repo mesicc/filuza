@@ -326,8 +326,14 @@ export function Transakcije() {
                     <CaretLeft size={16} aria-hidden="true" />
                     Prethodna
                   </Button>
-                  <span className="tnum min-w-0 truncate text-[13px] sm:px-1.5 sm:text-[13.5px]">
-                    Stranica {page} od {pages}
+                  <span className="tnum whitespace-nowrap text-[13px] sm:px-1.5 sm:text-[13.5px]">
+                    <span className="max-[25rem]:sr-only">Stranica </span>
+                    {page}
+                    <span className="max-[25rem]:sr-only"> od </span>
+                    <span aria-hidden="true" className="min-[25.01rem]:hidden">
+                      {" / "}
+                    </span>
+                    {pages}
                   </span>
                   <Button variant="secondary" size="sm" className="px-2.5" disabled={page >= pages} onClick={() => setF({ page: page + 1 })}>
                     Sljedeća

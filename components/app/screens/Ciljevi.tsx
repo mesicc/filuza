@@ -61,7 +61,7 @@ export function Ciljevi() {
           >
             <span
               aria-hidden="true"
-              className="absolute -top-[110px] -right-[70px] size-[260px] rounded-full border-2 border-dashed border-soft-2"
+              className="absolute -top-[150px] -right-[130px] size-[260px] rounded-full border-2 border-dashed border-soft-2 tb:-top-[110px] tb:-right-[70px]"
             />
             <div className="relative flex items-center gap-4 tb:gap-5">
               <span aria-hidden="true" className="grid size-[76px] shrink-0 place-items-center rounded-full bg-white">
@@ -70,7 +70,8 @@ export function Ciljevi() {
               <div className="min-w-0 flex-1">
                 <h2 className="text-[14px] leading-5 font-medium text-ink-2">Ukupno ušteđeno za sve ciljeve</h2>
                 <p className="tnum mt-1 text-[15px] leading-7 text-ink-2">
-                  <strong className="amount text-[clamp(22px,2.4vw,30px)] text-heading">{km(saved)}</strong> od {km(target)}
+                  <strong className="amount block text-[clamp(22px,2.4vw,30px)] text-heading sm:inline">{km(saved)}</strong>{" "}
+                  <span className="whitespace-nowrap">od {km(target)}</span>
                 </p>
               </div>
             </div>

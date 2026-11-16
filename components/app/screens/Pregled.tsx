@@ -236,7 +236,7 @@ function Dashboard({ txs, mode }: { txs: Transaction[]; mode: PMode }) {
       </section>
 
       {/* 2. KPI kartice */}
-      <section aria-label="Sažetak" className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(230px,1fr))]">
+      <section aria-label="Sažetak" className="grid gap-4 min-[30rem]:grid-cols-2 min-[80rem]:grid-cols-4">
         <Kpi title="Ukupno stanje" icon="wallet" color="#D85A30" value={km(balance)} tone="text-ink" desc="Tvoje trenutno stanje." />
         <Kpi
           title="Ukupni prihodi"

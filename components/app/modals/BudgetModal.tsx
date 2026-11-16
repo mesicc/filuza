@@ -3,11 +3,11 @@
 import { useId, useState } from "react";
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
-import { Checkbox, Select, TextField } from "@/components/ui/Field";
+import { Checkbox, Select } from "@/components/ui/Field";
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/Toast";
 import { budgetsFor } from "@/lib/calc";
-import { MIN_DATE } from "@/lib/dates";
+import { MIN_DATE, TODAY, addMonths, monthOptions } from "@/lib/dates";
 import { num, parseAmount } from "@/lib/format";
 import { useFiluza } from "@/lib/store";
 import type { Budget, ModalState } from "@/lib/types";
@@ -35,6 +35,7 @@ export function BudgetModal({ modal, onClose }: { modal: ModalState; onClose: ()
   const [month, setMonth] = useState(existing?.month ?? viewMonth);
   const [recurring, setRecurring] = useState(existing?.recurring ?? true);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
+  const months = monthOptions(MIN_DATE.slice(0, 7), addMonths(TODAY, 12).slice(0, 7));
   const clear = (f: Field) => setErrors((e) => (f in e ? { ...e, [f]: undefined } : e));
 
   function submit(e: FormEvent) {
@@ -114,10 +115,8 @@ export function BudgetModal({ modal, onClose }: { modal: ModalState; onClose: ()
             clear("limit");
           }}
         />
-        <TextField
+        <Select
           label="Mjesec"
-          type="month"
-          min={MIN_DATE.slice(0, 7)}
           value={month}
           error={errors.month}
           onChange={(e) => {
@@ -125,7 +124,14 @@ export function BudgetModal({ modal, onClose }: { modal: ModalState; onClose: ()
             clear("month");
             clear("cat");
           }}
-        />
+        >
+          {!months.some((o) => o.value === month) && <option value="">Odaberi mjesec</option>}
+          {months.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </Select>
         <Checkbox
           className="rounded-[14px] border border-border bg-bg p-3.5"
           checked={recurring}

@@ -108,3 +108,18 @@ export function monthKey(iso: ISODate): string {
 export function clampDate(iso: ISODate, min: ISODate = MIN_DATE, max: ISODate = TODAY): ISODate {
   return iso < min ? min : iso > max ? max : iso;
 }
+
+/** Mjeseci od `from` do `to` (oba `YYYY-MM`, uključivo) za padajuće liste: `{ value: "2026-11", label: "Novembar 2026" }`. */
+export function monthOptions(from: string, to: string): { value: string; label: string }[] {
+  const out: { value: string; label: string }[] = [];
+  let { y, m } = parts(`${from}-01`);
+  while (`${y}-${pad(m)}` <= to) {
+    out.push({ value: `${y}-${pad(m)}`, label: `${MONTHS[m - 1]} ${y}` });
+    m += 1;
+    if (m > 12) {
+      m = 1;
+      y += 1;
+    }
+  }
+  return out;
+}

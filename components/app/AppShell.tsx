@@ -11,6 +11,7 @@ import { flashToast } from "@/lib/download";
 import { Icon } from "@/lib/icons";
 import { useFiluza, useHydrated } from "@/lib/store";
 import type { Screen } from "@/lib/types";
+import { useScrollLock } from "@/lib/useScrollLock";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { ModalHost } from "./modals/ModalHost";
 import { AvatarButton, BellButton } from "./HeaderButtons";
@@ -249,6 +250,7 @@ function MoreSheet() {
   const logout = useLogout();
   const panel = useRef<HTMLDivElement>(null);
 
+  useScrollLock(open);
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;

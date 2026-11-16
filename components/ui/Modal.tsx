@@ -5,6 +5,7 @@ import { useEffect, useId, useRef } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
+import { useScrollLock } from "@/lib/useScrollLock";
 import { IconButton } from "./Button";
 
 interface Props {
@@ -32,13 +33,12 @@ export function Modal({ open, onClose, title, description, children, footer, wid
   const titleId = useId();
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
+  useScrollLock(open);
 
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
     const el = panel.current;
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
 
     const first =
       el?.querySelector<HTMLElement>("[data-autofocus]") ??
@@ -68,7 +68,6 @@ export function Modal({ open, onClose, title, description, children, footer, wid
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = overflow;
       prev?.focus?.();
     };
   }, [open]);

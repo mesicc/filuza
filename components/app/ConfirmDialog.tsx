@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/lib/icons";
 import { useFiluza } from "@/lib/store";
+import { useScrollLock } from "@/lib/useScrollLock";
 
 /**
  * Potvrdni dijalog. Otvara se preko store-a:
@@ -17,6 +18,7 @@ export function ConfirmDialog() {
   const panel = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const textId = useId();
+  useScrollLock(c !== null);
 
   useEffect(() => {
     if (!c) return;

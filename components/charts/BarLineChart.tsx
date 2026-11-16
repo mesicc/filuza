@@ -235,6 +235,7 @@ export function BarLineChart({ columns, style = "stupci", plan, growKey, label, 
               key={c.key}
               className={cn(
                 "tnum min-w-0 flex-1 text-center text-[11px] leading-4 whitespace-nowrap",
+                n >= 12 && !dense && "max-sm:text-[9.5px] max-sm:tracking-[-0.02em]",
                 c.mark ? "font-bold text-primary" : "text-ink-2",
                 c.future && !c.mark && "opacity-60",
               )}

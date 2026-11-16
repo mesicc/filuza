@@ -379,7 +379,7 @@ function LoginForm({ email, setEmail, go }: FormProps) {
             clear("password");
           }}
           labelRight={
-            <TextLink onClick={() => go("forgot")} className="text-[13.5px]">
+            <TextLink onClick={() => go("forgot")} className="-my-2.5 py-2.5 text-[13.5px]">
               Zaboravio si lozinku?
             </TextLink>
           }

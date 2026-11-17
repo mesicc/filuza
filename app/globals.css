@@ -262,6 +262,9 @@
 /* ───────────────────────── Polja forme ───────────────────────── */
 @layer components {
   .fz-field {
+    /* iOS Safari inače dodaje vlastitu unutrašnju sjenku i zaobljenja. */
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     min-width: 0;
     height: 46px;
@@ -322,6 +325,9 @@
   }
   input[type="date"].fz-field::-webkit-date-and-time-value {
     text-align: left;
+  }
+  input[type="search"].fz-field::-webkit-search-decoration {
+    -webkit-appearance: none;
   }
   input[type="search"].fz-field::-webkit-search-cancel-button {
     appearance: none;

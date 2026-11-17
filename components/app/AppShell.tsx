@@ -157,7 +157,7 @@ function Sidebar() {
 
 function MobileTop() {
   return (
-    <div className="sticky top-0 z-30 flex h-[60px] items-center gap-2 border-b border-border bg-[rgba(255,248,245,.92)] px-4 backdrop-blur-md tb:hidden">
+    <div className="sticky top-0 z-30 flex h-[60px] items-center gap-2 border-b border-border bg-[rgba(255,248,245,.92)] px-4 fz-blur tb:hidden">
       <Logo size={32} textSize={23} className="mr-auto" />
       <BellButton />
       <AvatarButton />
@@ -212,7 +212,7 @@ function BottomNav() {
   return (
     <nav
       aria-label="Ekrani"
-      className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-white/[.96] pb-[env(safe-area-inset-bottom)] backdrop-blur-md tb:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-white/[.96] pb-[env(safe-area-inset-bottom)] fz-blur tb:hidden"
     >
       <BottomItem label="Pregled" icon="layout-dashboard" active={screen === "pregled" && !moreOpen} onClick={() => go("pregled")} />
       <BottomItem

@@ -242,6 +242,12 @@
   white-space: nowrap;
 }
 
+/* Zamućenje pozadine; Safari do verzije 18 razumije samo -webkit- varijantu. */
+@utility fz-blur {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
 @utility tnum {
   font-variant-numeric: tabular-nums;
 }

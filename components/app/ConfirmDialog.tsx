@@ -4,6 +4,7 @@ import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/lib/icons";
+import { opener, restoreFocus } from "@/lib/inputModality";
 import { useFiluza } from "@/lib/store";
 import { useScrollLock } from "@/lib/useScrollLock";
 
@@ -22,7 +23,7 @@ export function ConfirmDialog() {
 
   useEffect(() => {
     if (!c) return;
-    const prev = document.activeElement as HTMLElement | null;
+    const prev = opener();
     const el = panel.current;
     el?.querySelector<HTMLElement>("button")?.focus();
     const onKey = (e: KeyboardEvent) => {
@@ -46,7 +47,7 @@ export function ConfirmDialog() {
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
-      prev?.focus?.();
+      restoreFocus(prev);
     };
   }, [c, close]);
 

@@ -5,6 +5,7 @@ import { useEffect, useId, useRef } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
+import { opener, restoreFocus } from "@/lib/inputModality";
 import { useScrollLock } from "@/lib/useScrollLock";
 import { IconButton } from "./Button";
 
@@ -37,7 +38,7 @@ export function Modal({ open, onClose, title, description, children, footer, wid
 
   useEffect(() => {
     if (!open) return;
-    const prev = document.activeElement as HTMLElement | null;
+    const prev = opener();
     const el = panel.current;
 
     const first =
@@ -68,7 +69,7 @@ export function Modal({ open, onClose, title, description, children, footer, wid
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
-      prev?.focus?.();
+      restoreFocus(prev);
     };
   }, [open]);
 

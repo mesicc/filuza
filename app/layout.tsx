@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Instrument_Sans } from "next/font/google";
 import type { ReactNode } from "react";
+import { InputModality } from "@/components/ui/InputModality";
 import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="bs" className={`${instrument.variable} ${fraunces.variable}`}>
       <body>
+        <InputModality />
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

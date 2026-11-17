@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/primitives";
 import { cn } from "@/lib/cn";
 import { flashToast } from "@/lib/download";
 import { Icon } from "@/lib/icons";
+import { opener, restoreFocus } from "@/lib/inputModality";
 import { session, signOut, useFiluza, useHydrated } from "@/lib/store";
 import type { Screen } from "@/lib/types";
 import { useScrollLock } from "@/lib/useScrollLock";
@@ -254,7 +255,7 @@ function MoreSheet() {
 
   useEffect(() => {
     if (!open) return;
-    const prev = document.activeElement as HTMLElement | null;
+    const prev = opener();
     panel.current?.querySelector<HTMLElement>("button")?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") return setOpen(false);
@@ -273,7 +274,7 @@ function MoreSheet() {
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
-      prev?.focus?.();
+      restoreFocus(prev);
     };
   }, [open, setOpen]);
 

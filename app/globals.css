@@ -404,6 +404,13 @@
   }
 }
 
+/* ───────────────────────── Okvir fokusa samo za tastaturu ───────────────────────── */
+/* Safari prikazuje :focus-visible i kad fokus dođe programski nakon klika ili dodira
+   (otvaranje dijaloga, povratak fokusa). Polja forme zadržavaju svoj okvir. */
+:root[data-input="pointer"] :focus-visible:not(input, select, textarea) {
+  outline: none;
+}
+
 /* ───────────────────────── Smanjeno kretanje ───────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html {

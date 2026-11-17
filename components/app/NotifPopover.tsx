@@ -5,6 +5,7 @@ import { IconButton } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import { cn } from "@/lib/cn";
 import { Icon } from "@/lib/icons";
+import { opener, restoreFocus } from "@/lib/inputModality";
 import { useFiluza, useNotifs } from "@/lib/store";
 import { NOTIF_TONES } from "@/lib/types";
 import { EmptyState, LinkButton } from "./common";
@@ -21,7 +22,7 @@ export function NotifPopover() {
 
   useEffect(() => {
     if (!open) return;
-    const prev = document.activeElement as HTMLElement | null;
+    const prev = opener();
     const el = panel.current;
     el?.focus();
     const onDown = (e: PointerEvent) => {
@@ -35,7 +36,7 @@ export function NotifPopover() {
     return () => {
       document.removeEventListener("pointerdown", onDown);
       document.removeEventListener("keydown", onKey);
-      if (el?.contains(document.activeElement) || document.activeElement === document.body) prev?.focus?.();
+      if (el?.contains(document.activeElement) || document.activeElement === document.body) restoreFocus(prev);
     };
   }, [open, setOpen]);
 
@@ -67,7 +68,7 @@ export function NotifPopover() {
       {notifs.length === 0 ? (
         <EmptyState compact icon="bell-off" title="Sve je mirno. Nemaš novih notifikacija." />
       ) : (
-        <ul className="min-h-0 flex-1 overflow-y-auto">
+        <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           {notifs.map((n) => {
             const tone = NOTIF_TONES[n.tone];
             return (

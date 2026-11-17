@@ -5,6 +5,7 @@ import { useEffect, useId, useRef } from "react";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
+import { opener, restoreFocus } from "@/lib/inputModality";
 import { useScrollLock } from "@/lib/useScrollLock";
 import { IconButton } from "./Button";
 
@@ -37,7 +38,7 @@ export function Modal({ open, onClose, title, description, children, footer, wid
 
   useEffect(() => {
     if (!open) return;
-    const prev = document.activeElement as HTMLElement | null;
+    const prev = opener();
     const el = panel.current;
 
     const first =
@@ -68,7 +69,7 @@ export function Modal({ open, onClose, title, description, children, footer, wid
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
-      prev?.focus?.();
+      restoreFocus(prev);
     };
   }, [open]);
 
@@ -104,7 +105,7 @@ export function Modal({ open, onClose, title, description, children, footer, wid
             <X size={18} aria-hidden="true" />
           </IconButton>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto px-[18px] py-5 tb:px-6">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-[18px] py-5 tb:px-6">{children}</div>
         {footer && (
           <div className="flex flex-col-reverse gap-2.5 border-t border-divider px-[18px] py-4 tb:flex-row tb:justify-end tb:px-6 pb-[max(16px,env(safe-area-inset-bottom))]">
             {footer}

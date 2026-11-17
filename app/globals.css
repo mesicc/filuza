@@ -117,6 +117,8 @@
 /* ───────────────────────── Osnova ───────────────────────── */
 @layer base {
   html {
+    /* Sivi bljesak koji iOS crta pri dodiru; dugmad imaju vlastita :active stanja. */
+    -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth;
     scroll-padding-top: 88px;
     -webkit-text-size-adjust: 100%;
@@ -164,6 +166,18 @@
   label[for],
   select {
     cursor: pointer;
+  }
+
+  /* Bez čekanja na dvostruki dodir (zum) – dodir na dugme reaguje odmah. */
+  a,
+  button,
+  [role="button"],
+  label,
+  summary,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
   }
 
   button:disabled,
@@ -242,6 +256,12 @@
   white-space: nowrap;
 }
 
+/* Zamućenje pozadine; Safari do verzije 18 razumije samo -webkit- varijantu. */
+@utility fz-blur {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
 @utility tnum {
   font-variant-numeric: tabular-nums;
 }
@@ -256,6 +276,9 @@
 /* ───────────────────────── Polja forme ───────────────────────── */
 @layer components {
   .fz-field {
+    /* iOS Safari inače dodaje vlastitu unutrašnju sjenku i zaobljenja. */
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     min-width: 0;
     height: 46px;
@@ -317,6 +340,9 @@
   input[type="date"].fz-field::-webkit-date-and-time-value {
     text-align: left;
   }
+  input[type="search"].fz-field::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
   input[type="search"].fz-field::-webkit-search-cancel-button {
     appearance: none;
     -webkit-appearance: none;
@@ -376,6 +402,13 @@
     opacity: 1;
     transform: none;
   }
+}
+
+/* ───────────────────────── Okvir fokusa samo za tastaturu ───────────────────────── */
+/* Safari prikazuje :focus-visible i kad fokus dođe programski nakon klika ili dodira
+   (otvaranje dijaloga, povratak fokusa). Polja forme zadržavaju svoj okvir. */
+:root[data-input="pointer"] :focus-visible:not(input, select, textarea) {
+  outline: none;
 }
 
 /* ───────────────────────── Smanjeno kretanje ───────────────────────── */

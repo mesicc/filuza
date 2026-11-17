@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/primitives";
 import { cn } from "@/lib/cn";
 import { flashToast } from "@/lib/download";
 import { Icon } from "@/lib/icons";
+import { opener, restoreFocus } from "@/lib/inputModality";
 import { session, signOut, useFiluza, useHydrated } from "@/lib/store";
 import type { Screen } from "@/lib/types";
 import { useScrollLock } from "@/lib/useScrollLock";
@@ -157,7 +158,7 @@ function Sidebar() {
 
 function MobileTop() {
   return (
-    <div className="sticky top-0 z-30 flex h-[60px] items-center gap-2 border-b border-border bg-[rgba(255,248,245,.92)] px-4 backdrop-blur-md tb:hidden">
+    <div className="sticky top-0 z-30 flex h-[60px] items-center gap-2 border-b border-border bg-[rgba(255,248,245,.92)] px-4 fz-blur tb:hidden">
       <Logo size={32} textSize={23} className="mr-auto" />
       <BellButton />
       <AvatarButton />
@@ -212,7 +213,7 @@ function BottomNav() {
   return (
     <nav
       aria-label="Ekrani"
-      className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-white/[.96] pb-[env(safe-area-inset-bottom)] backdrop-blur-md tb:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-white/[.96] pb-[env(safe-area-inset-bottom)] fz-blur tb:hidden"
     >
       <BottomItem label="Pregled" icon="layout-dashboard" active={screen === "pregled" && !moreOpen} onClick={() => go("pregled")} />
       <BottomItem
@@ -254,7 +255,7 @@ function MoreSheet() {
 
   useEffect(() => {
     if (!open) return;
-    const prev = document.activeElement as HTMLElement | null;
+    const prev = opener();
     panel.current?.querySelector<HTMLElement>("button")?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") return setOpen(false);
@@ -273,7 +274,7 @@ function MoreSheet() {
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
-      prev?.focus?.();
+      restoreFocus(prev);
     };
   }, [open, setOpen]);
 

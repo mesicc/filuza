@@ -104,7 +104,7 @@ export function Modal({ open, onClose, title, description, children, footer, wid
             <X size={18} aria-hidden="true" />
           </IconButton>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto px-[18px] py-5 tb:px-6">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-[18px] py-5 tb:px-6">{children}</div>
         {footer && (
           <div className="flex flex-col-reverse gap-2.5 border-t border-divider px-[18px] py-4 tb:flex-row tb:justify-end tb:px-6 pb-[max(16px,env(safe-area-inset-bottom))]">
             {footer}

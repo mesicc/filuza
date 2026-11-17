@@ -67,7 +67,7 @@ export function NotifPopover() {
       {notifs.length === 0 ? (
         <EmptyState compact icon="bell-off" title="Sve je mirno. Nemaš novih notifikacija." />
       ) : (
-        <ul className="min-h-0 flex-1 overflow-y-auto">
+        <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           {notifs.map((n) => {
             const tone = NOTIF_TONES[n.tone];
             return (

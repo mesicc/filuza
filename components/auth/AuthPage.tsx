@@ -22,20 +22,24 @@ import { Ring } from "@/components/charts/Ring";
 import { Button } from "@/components/ui/Button";
 import { Checkbox, TextField } from "@/components/ui/Field";
 import { Segmented } from "@/components/ui/Segmented";
+import { StrengthMeter } from "@/components/ui/StrengthMeter";
 import { cn } from "@/lib/cn";
 import { flashToast } from "@/lib/download";
 import { skm } from "@/lib/format";
 import { useFiluza } from "@/lib/store";
 import {
-  STRENGTH,
   emailError,
   hasErrors,
-  passwordStrength,
   validateLogin,
   validateRegister,
   validateReset,
 } from "@/lib/validation";
-import type { Errors, LoginField, RegisterField, ResetField } from "@/lib/validation";
+import type {
+  Errors,
+  LoginField,
+  RegisterField,
+  ResetField,
+} from "@/lib/validation";
 
 type AuthMode = "login" | "register" | "forgot" | "reset";
 
@@ -63,8 +67,14 @@ const SIDE: Record<AuthMode, { title: string; text: string }> = {
     title: "Čuvaj svaku paru.",
     text: "Za minutu imaš jasan pregled prihoda, rashoda i štednje — sve u KM.",
   },
-  forgot: { title: "Bez brige.", text: "Za par trenutaka ćeš ponovo imati pristup svom računu." },
-  reset: { title: "Skoro gotovo.", text: "Postavi novu lozinku i vrati se svojim finansijama." },
+  forgot: {
+    title: "Bez brige.",
+    text: "Za par trenutaka ćeš ponovo imati pristup svom računu.",
+  },
+  reset: {
+    title: "Skoro gotovo.",
+    text: "Postavi novu lozinku i vrati se svojim finansijama.",
+  },
 };
 
 const TABS = [
@@ -73,7 +83,8 @@ const TABS = [
 ] as const;
 
 const BUSY_MS = 700;
-const LINK = "font-semibold text-primary underline-offset-4 transition-colors duration-150 hover:text-primary-hover hover:underline";
+const LINK =
+  "font-semibold text-primary underline-offset-4 transition-colors duration-150 hover:text-primary-hover hover:underline";
 
 /** Pokreće `fn` nakon kratkog „busy“ stanja; bezbjedno i ako se forma u međuvremenu ukloni. */
 function useBusy() {
@@ -141,23 +152,35 @@ export function AuthPage() {
           <div className="relative grid aspect-square w-[min(440px,100%,56dvh)] place-items-center">
             <span className="absolute inset-0 rounded-full border-2 border-dashed border-soft-2" />
             <span className="absolute inset-[14.8%] rounded-full bg-bg" />
-            <Coin shine size={200} className="relative h-auto w-[45.5%] drop-shadow-[0_18px_24px_rgba(153,60,29,.28)]" />
+            <Coin
+              shine
+              size={200}
+              className="relative h-auto w-[45.5%] drop-shadow-[0_18px_24px_rgba(153,60,29,.28)]"
+            />
 
             <div className="absolute top-[9%] right-[-3%] flex items-center gap-3 rounded-[18px] border border-border bg-surface py-3 pr-5 pl-3 shadow-popover animate-fz-float">
               <span className="grid size-10 place-items-center rounded-[12px] bg-income-soft text-income-strong">
                 <ArrowDownLeft size={20} />
               </span>
               <span>
-                <span className="block text-[13px] leading-[18px] text-ink-2">Plata</span>
-                <span className="amount block text-[15.5px] leading-[22px] text-income-text">{skm(2000, "prihod")}</span>
+                <span className="block text-[13px] leading-[18px] text-ink-2">
+                  Plata
+                </span>
+                <span className="amount block text-[15.5px] leading-[22px] text-income-text">
+                  {skm(2000, "prihod")}
+                </span>
               </span>
             </div>
 
             <div className="absolute bottom-[9%] left-[-3%] flex items-center gap-3 rounded-[18px] border border-border bg-surface py-3 pr-5 pl-3 shadow-popover animate-fz-float [animation-delay:-2.5s]">
               <Ring value={70} size={44} stroke={5} />
               <span>
-                <span className="block text-[13px] leading-[18px] text-ink-2">Budžet za hranu</span>
-                <span className="amount block text-[15.5px] leading-[22px] text-ink">350 / 500 KM</span>
+                <span className="block text-[13px] leading-[18px] text-ink-2">
+                  Budžet za hranu
+                </span>
+                <span className="amount block text-[15.5px] leading-[22px] text-ink">
+                  350 / 500 KM
+                </span>
               </span>
             </div>
           </div>
@@ -167,14 +190,20 @@ export function AuthPage() {
           <p className="font-display text-[34px] leading-[1.08] font-bold tracking-[-0.022em] text-balance text-heading">
             {side.title}
           </p>
-          <p className="mt-3 text-[16px] leading-[1.6] text-ink-2">{side.text}</p>
+          <p className="mt-3 text-[16px] leading-[1.6] text-ink-2">
+            {side.text}
+          </p>
         </div>
       </aside>
 
       {/* ───────── Forma ───────── */}
       <main className="flex min-h-dvh flex-col px-5 py-5 auth:px-10 auth:py-8">
         <div className="mx-auto flex h-11 w-full max-w-[440px] items-center">
-          <Link href="/" aria-label="Filuza – početna" className="-ml-1 rounded-control p-1 auth:hidden">
+          <Link
+            href="/"
+            aria-label="Filuza – početna"
+            className="-ml-1 rounded-control p-1 auth:hidden"
+          >
             <Logo size={34} textSize={24} />
           </Link>
           <Link
@@ -207,19 +236,34 @@ export function AuthPage() {
                   key={mode}
                   className="animate-fz-in"
                   {...(tabbed
-                    ? { id: "auth-panel", role: "tabpanel", "aria-labelledby": `auth-tab-${mode}` }
+                    ? {
+                        id: "auth-panel",
+                        role: "tabpanel",
+                        "aria-labelledby": `auth-tab-${mode}`,
+                      }
                     : {})}
                 >
-                  {mode === "login" && <LoginForm email={email} setEmail={setEmail} go={go} />}
-                  {mode === "register" && <RegisterForm email={email} setEmail={setEmail} go={go} />}
+                  {mode === "login" && (
+                    <LoginForm email={email} setEmail={setEmail} go={go} />
+                  )}
+                  {mode === "register" && (
+                    <RegisterForm email={email} setEmail={setEmail} go={go} />
+                  )}
                   {mode === "forgot" && (
-                    <ForgotForm email={email} setEmail={setEmail} go={go} showFlash={showFlash} />
+                    <ForgotForm
+                      email={email}
+                      setEmail={setEmail}
+                      go={go}
+                      showFlash={showFlash}
+                    />
                   )}
                   {mode === "reset" && (
                     <ResetForm
                       onDone={() => {
                         go("login");
-                        showFlash("Lozinka je promijenjena. Prijavi se novom lozinkom.");
+                        showFlash(
+                          "Lozinka je promijenjena. Prijavi se novom lozinkom.",
+                        );
                       }}
                       go={go}
                     />
@@ -230,7 +274,11 @@ export function AuthPage() {
             <div role="status" aria-live="polite">
               {flash && (
                 <p className="mt-5 flex items-start gap-2.5 rounded-control bg-income-soft px-3.5 py-3 text-[14px] leading-5 font-medium text-income-strong animate-fz-pop">
-                  <CheckCircle size={20} aria-hidden="true" className="shrink-0" />
+                  <CheckCircle
+                    size={20}
+                    aria-hidden="true"
+                    className="shrink-0"
+                  />
                   {flash}
                 </p>
               )}
@@ -239,7 +287,11 @@ export function AuthPage() {
         </div>
 
         <p className="mx-auto flex w-full max-w-[440px] items-center justify-center gap-1.5 text-[12px] leading-4 text-ink-2">
-          <ShieldCheck size={16} aria-hidden="true" className="shrink-0 text-income-text" />
+          <ShieldCheck
+            size={16}
+            aria-hidden="true"
+            className="shrink-0 text-income-text"
+          />
           Tvoji podaci su zaštićeni šifrovanom vezom.
         </p>
       </main>
@@ -249,19 +301,35 @@ export function AuthPage() {
 
 /* ───────────────────────── Zajednički dijelovi ───────────────────────── */
 
-function Heading({ title, text, icon }: { title: string; text?: ReactNode; icon?: ReactNode }) {
+function Heading({
+  title,
+  text,
+  icon,
+}: {
+  title: string;
+  text?: ReactNode;
+  icon?: ReactNode;
+}) {
   return (
     <div className="mb-7">
       {icon}
       <h1 className="font-display text-[30px] leading-[1.1] font-bold tracking-[-0.022em] text-heading sm:text-[32px]">
         {title}
       </h1>
-      {text && <p className="mt-2.5 text-[15.5px] leading-[1.55] text-ink-2">{text}</p>}
+      {text && (
+        <p className="mt-2.5 text-[15.5px] leading-[1.55] text-ink-2">{text}</p>
+      )}
     </div>
   );
 }
 
-function EyeToggle({ shown, onToggle }: { shown: boolean; onToggle: () => void }) {
+function EyeToggle({
+  shown,
+  onToggle,
+}: {
+  shown: boolean;
+  onToggle: () => void;
+}) {
   return (
     <button
       type="button"
@@ -270,14 +338,30 @@ function EyeToggle({ shown, onToggle }: { shown: boolean; onToggle: () => void }
       onClick={onToggle}
       className="grid size-10 place-items-center rounded-[10px] text-ink-2 transition-colors duration-150 hover:bg-soft hover:text-heading active:bg-soft-2/60"
     >
-      {shown ? <EyeSlash size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
+      {shown ? (
+        <EyeSlash size={20} aria-hidden="true" />
+      ) : (
+        <Eye size={20} aria-hidden="true" />
+      )}
     </button>
   );
 }
 
-function TextLink({ onClick, children, className }: { onClick: () => void; children: ReactNode; className?: string }) {
+function TextLink({
+  onClick,
+  children,
+  className,
+}: {
+  onClick: () => void;
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <button type="button" onClick={onClick} className={cn(LINK, "rounded-[4px]", className)}>
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(LINK, "rounded-[4px]", className)}
+    >
       {children}
     </button>
   );
@@ -324,7 +408,8 @@ function LoginForm({ email, setEmail, go }: FormProps) {
     setBanner(null);
     if (hasErrors(errs)) return;
     run(() => {
-      if (password.length < 6) setBanner("Email ili lozinka nisu tačni. Pokušaj ponovo.");
+      if (password.length < 6)
+        setBanner("Email ili lozinka nisu tačni. Pokušaj ponovo.");
       else {
         useFiluza.setState({ screen: "pregled", signedIn: true });
         flashToast("Dobro došao nazad!");
@@ -335,7 +420,10 @@ function LoginForm({ email, setEmail, go }: FormProps) {
 
   return (
     <form noValidate onSubmit={submit}>
-      <Heading title="Lijepo te ponovo vidjeti." text="Prijavi se i nastavi pratiti svoj novac." />
+      <Heading
+        title="Lijepo te ponovo vidjeti."
+        text="Prijavi se i nastavi pratiti svoj novac."
+      />
 
       {banner && (
         <p
@@ -379,55 +467,46 @@ function LoginForm({ email, setEmail, go }: FormProps) {
             clear("password");
           }}
           labelRight={
-            <TextLink onClick={() => go("forgot")} className="-my-2.5 py-2.5 text-[13.5px]">
+            <TextLink
+              onClick={() => go("forgot")}
+              className="-my-2.5 py-2.5 text-[13.5px]"
+            >
               Zaboravio si lozinku?
             </TextLink>
           }
-          trailing={<EyeToggle shown={show} onToggle={() => setShow((s) => !s)} />}
+          trailing={
+            <EyeToggle shown={show} onToggle={() => setShow((s) => !s)} />
+          }
         />
-        <Checkbox name="remember" checked={remember} onChange={(e) => setRemember(e.target.checked)}>
+        <Checkbox
+          name="remember"
+          checked={remember}
+          onChange={(e) => setRemember(e.target.checked)}
+        >
           Zapamti me
         </Checkbox>
       </div>
 
-      <Button type="submit" size="lg" block busy={busy} busyText="Prijavljujem…" className="mt-6">
+      <Button
+        type="submit"
+        size="lg"
+        block
+        busy={busy}
+        busyText="Prijavljujem…"
+        className="mt-6"
+      >
         Prijavi se
       </Button>
 
       <p className="mt-6 text-center text-[14.5px] text-ink-2">
-        Još nemaš račun? <TextLink onClick={() => go("register")}>Registruj se.</TextLink>
+        Još nemaš račun?{" "}
+        <TextLink onClick={() => go("register")}>Registruj se.</TextLink>
       </p>
     </form>
   );
 }
 
 /* ───────────────────────── Registracija ───────────────────────── */
-
-function StrengthMeter({ password }: { password: string }) {
-  const score = passwordStrength(password);
-  const level = score > 0 ? STRENGTH[score - 1] : null;
-  return (
-    <div className="mt-2.5 flex h-[18px] items-center gap-3">
-      <div aria-hidden="true" className="flex flex-1 gap-1.5">
-        {[1, 2, 3, 4].map((i) => (
-          <span
-            key={i}
-            className="h-1.5 flex-1 rounded-full transition-colors duration-200"
-            style={{ background: level && i <= score ? level.color : "#F4E4DD" }}
-          />
-        ))}
-      </div>
-      <span aria-live="polite" className="min-w-[66px] text-right text-[12.5px] leading-[18px] font-semibold text-ink-2">
-        {level && (
-          <>
-            <span className="sr-only">Jačina lozinke: </span>
-            {level.label}
-          </>
-        )}
-      </span>
-    </div>
-  );
-}
 
 function RegisterForm({ email, setEmail, go }: FormProps) {
   const router = useRouter();
@@ -445,11 +524,22 @@ function RegisterForm({ email, setEmail, go }: FormProps) {
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    const errs = validateRegister({ firstName, lastName, email, password, confirm, terms });
+    const errs = validateRegister({
+      firstName,
+      lastName,
+      email,
+      password,
+      confirm,
+      terms,
+    });
     setErrors(errs);
     if (hasErrors(errs)) return;
     run(() => {
-      setProfile({ ime: firstName.trim(), prezime: lastName.trim(), email: email.trim() });
+      setProfile({
+        ime: firstName.trim(),
+        prezime: lastName.trim(),
+        email: email.trim(),
+      });
       useFiluza.setState({ screen: "pregled", signedIn: true });
       flashToast("Račun je kreiran. Dobro došao u Filuzu!");
       router.push("/app");
@@ -458,7 +548,10 @@ function RegisterForm({ email, setEmail, go }: FormProps) {
 
   return (
     <form noValidate onSubmit={submit}>
-      <Heading title="Dobro došao u Filuzu." text="Počni pratiti svoj novac i čuvati svaku paru." />
+      <Heading
+        title="Dobro došao u Filuzu."
+        text="Počni pratiti svoj novac i čuvati svaku paru."
+      />
 
       <div className="grid gap-[18px]">
         <div className="grid gap-[18px] min-[30rem]:grid-cols-2 min-[30rem]:gap-3.5">
@@ -518,7 +611,9 @@ function RegisterForm({ email, setEmail, go }: FormProps) {
             setPassword(e.target.value);
             clear("password");
           }}
-          trailing={<EyeToggle shown={show} onToggle={() => setShow((s) => !s)} />}
+          trailing={
+            <EyeToggle shown={show} onToggle={() => setShow((s) => !s)} />
+          }
           below={<StrengthMeter password={password} />}
         />
         <TextField
@@ -529,7 +624,11 @@ function RegisterForm({ email, setEmail, go }: FormProps) {
           fieldSize="lg"
           icon={
             matches ? (
-              <CheckCircle size={18} aria-hidden="true" className="text-income" />
+              <CheckCircle
+                size={18}
+                aria-hidden="true"
+                className="text-income"
+              />
             ) : (
               LOCK_ICON
             )
@@ -562,12 +661,20 @@ function RegisterForm({ email, setEmail, go }: FormProps) {
         </Checkbox>
       </div>
 
-      <Button type="submit" size="lg" block busy={busy} busyText="Kreiram račun…" className="mt-6">
+      <Button
+        type="submit"
+        size="lg"
+        block
+        busy={busy}
+        busyText="Kreiram račun…"
+        className="mt-6"
+      >
         Kreiraj besplatan račun
       </Button>
 
       <p className="mt-6 text-center text-[14.5px] text-ink-2">
-        Već imaš račun? <TextLink onClick={() => go("login")}>Prijavi se.</TextLink>
+        Već imaš račun?{" "}
+        <TextLink onClick={() => go("login")}>Prijavi se.</TextLink>
       </p>
     </form>
   );
@@ -588,7 +695,12 @@ function BackToLogin({ go }: { go: (m: AuthMode) => void }) {
   );
 }
 
-function ForgotForm({ email, setEmail, go, showFlash }: FormProps & { showFlash: (t: string) => void }) {
+function ForgotForm({
+  email,
+  setEmail,
+  go,
+  showFlash,
+}: FormProps & { showFlash: (t: string) => void }) {
   const [error, setError] = useState<string | undefined>();
   const [sent, setSent] = useState(false);
   const [busy, run] = useBusy();
@@ -613,8 +725,11 @@ function ForgotForm({ email, setEmail, go, showFlash }: FormProps & { showFlash:
           title="Provjeri svoj email"
           text={
             <>
-              Ako postoji račun za <strong className="font-semibold break-all text-ink">{email.trim()}</strong>, poslali
-              smo link za resetovanje lozinke. Link važi 30 minuta.
+              Ako postoji račun za{" "}
+              <strong className="font-semibold break-all text-ink">
+                {email.trim()}
+              </strong>
+              , poslali smo link za resetovanje lozinke. Link važi 30 minuta.
             </>
           }
         />
@@ -622,7 +737,10 @@ function ForgotForm({ email, setEmail, go, showFlash }: FormProps & { showFlash:
           Otvori link iz emaila
         </Button>
         <p className="mt-6 text-center text-[14.5px] text-ink-2">
-          Nisi dobio email? <TextLink onClick={() => showFlash("Link je ponovo poslan.")}>Pošalji ponovo</TextLink>
+          Nisi dobio email?{" "}
+          <TextLink onClick={() => showFlash("Link je ponovo poslan.")}>
+            Pošalji ponovo
+          </TextLink>
         </p>
       </div>
     );
@@ -666,7 +784,13 @@ function ForgotForm({ email, setEmail, go, showFlash }: FormProps & { showFlash:
 
 /* ───────────────────────── Nova lozinka ───────────────────────── */
 
-function ResetForm({ onDone, go }: { onDone: () => void; go: (m: AuthMode) => void }) {
+function ResetForm({
+  onDone,
+  go,
+}: {
+  onDone: () => void;
+  go: (m: AuthMode) => void;
+}) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [show, setShow] = useState(false);
@@ -683,7 +807,10 @@ function ResetForm({ onDone, go }: { onDone: () => void; go: (m: AuthMode) => vo
 
   return (
     <form noValidate onSubmit={submit}>
-      <Heading title="Postavi novu lozinku" text="Izaberi lozinku koju nisi koristio ranije." />
+      <Heading
+        title="Postavi novu lozinku"
+        text="Izaberi lozinku koju nisi koristio ranije."
+      />
       <div className="grid gap-[18px]">
         <TextField
           label="Nova lozinka"
@@ -700,7 +827,9 @@ function ResetForm({ onDone, go }: { onDone: () => void; go: (m: AuthMode) => vo
             setPassword(e.target.value);
             clear("password");
           }}
-          trailing={<EyeToggle shown={show} onToggle={() => setShow((s) => !s)} />}
+          trailing={
+            <EyeToggle shown={show} onToggle={() => setShow((s) => !s)} />
+          }
         />
         <TextField
           label="Potvrdi novu lozinku"

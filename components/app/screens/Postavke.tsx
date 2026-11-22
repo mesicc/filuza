@@ -11,6 +11,7 @@ import { useId, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import { Checkbox, Select, TextField } from "@/components/ui/Field";
+import { StrengthMeter } from "@/components/ui/StrengthMeter";
 import { useToast } from "@/components/ui/Toast";
 import { avatarFileError, avatarFromFile } from "@/lib/avatarImage";
 import { Card, Chip } from "@/components/ui/primitives";
@@ -479,6 +480,8 @@ function SecurityForm() {
     const errs: typeof errors = {};
     if (!cur) errs.cur = "Upiši trenutnu lozinku.";
     if (next.length < 8) errs.next = "Nova lozinka mora imati barem 8 znakova.";
+    else if (next === cur)
+      errs.next = "Nova lozinka mora se razlikovati od trenutne.";
     if (confirm !== next) errs.confirm = "Lozinke se ne podudaraju.";
     setErrors(errs);
     if (Object.keys(errs).length) return focusFirstInvalid(formId);
@@ -510,6 +513,7 @@ function SecurityForm() {
             autoComplete="new-password"
             value={next}
             error={errors.next}
+            below={<StrengthMeter password={next} />}
             onChange={(e) => {
               setNext(e.target.value);
               setErrors((x) => ({ ...x, next: undefined }));

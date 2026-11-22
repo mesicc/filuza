@@ -67,6 +67,8 @@ export interface Profile {
   ime: string;
   prezime: string;
   email: string;
+  /** Profilna slika kao JPEG data URL (256×256); bez nje se prikazuju inicijali. */
+  slika?: string;
 }
 
 export type DateFormat = "DD.MM.YYYY." | "D. M. YYYY.";
@@ -98,7 +100,8 @@ export type Screen =
 /** Period na Pregledu. */
 export type PMode = "day" | "month" | "year";
 
-export type TxPeriod = "sve" | "danas" | "mjesec" | "prosli-mjesec" | "godina" | "prosla-godina";
+export type TxPeriod =
+  "sve" | "danas" | "mjesec" | "prosli-mjesec" | "godina" | "prosla-godina";
 
 export interface TxFilter {
   type: "sve" | TxType;
@@ -168,18 +171,56 @@ export const METHODS: { value: Method; icon: string }[] = [
 ];
 
 export const CAT_ICONS = [
-  "shopping-basket", "house", "receipt", "bus", "fuel", "heart-pulse", "shirt", "clapperboard",
-  "shopping-bag", "graduation-cap", "briefcase", "laptop", "gift", "coins", "trending-up", "plane",
-  "car", "baby", "dog", "dumbbell", "coffee", "smartphone", "wrench", "circle-ellipsis",
+  "shopping-basket",
+  "house",
+  "receipt",
+  "bus",
+  "fuel",
+  "heart-pulse",
+  "shirt",
+  "clapperboard",
+  "shopping-bag",
+  "graduation-cap",
+  "briefcase",
+  "laptop",
+  "gift",
+  "coins",
+  "trending-up",
+  "plane",
+  "car",
+  "baby",
+  "dog",
+  "dumbbell",
+  "coffee",
+  "smartphone",
+  "wrench",
+  "circle-ellipsis",
 ] as const;
 
 export const CAT_COLORS = [
-  "#D85A30", "#993C1D", "#E6AA4E", "#C96B62", "#4F9D77", "#6E9C8A", "#7A4D3F", "#F2A07B",
+  "#D85A30",
+  "#993C1D",
+  "#E6AA4E",
+  "#C96B62",
+  "#4F9D77",
+  "#6E9C8A",
+  "#7A4D3F",
+  "#F2A07B",
 ] as const;
 
 export const GOAL_ICONS = [
-  "car", "plane", "shield", "house", "graduation-cap", "laptop", "gift", "heart", "sprout", "piggy-bank",
-  "baby", "bike",
+  "car",
+  "plane",
+  "shield",
+  "house",
+  "graduation-cap",
+  "laptop",
+  "gift",
+  "heart",
+  "sprout",
+  "piggy-bank",
+  "baby",
+  "bike",
 ] as const;
 
 export const UNKNOWN_CAT: Category = {

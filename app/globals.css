@@ -13,6 +13,8 @@
   --color-soft: #fde9e1;
   --color-soft-2: #f5c4b3;
   --color-border: #efd8cf;
+  /* Okvir polja i kvačica: ≥ 3:1 prema pozadini (WCAG 1.4.11), za razliku od dekorativnog `border`. */
+  --color-field-line: #ad8373;
   --color-divider: #f4e4dd;
   --color-grid: #f2e1da;
   --color-placeholder: #8f6b5c;
@@ -283,7 +285,7 @@
     min-width: 0;
     height: 46px;
     padding: 0 14px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-field-line);
     border-radius: var(--radius-control);
     background: var(--color-surface);
     color: var(--color-ink);
@@ -296,7 +298,7 @@
       background-color 0.15s;
   }
   .fz-field:hover:not(:disabled):not(:focus) {
-    border-color: var(--color-soft-2);
+    border-color: var(--color-ink-2);
   }
   .fz-field:focus,
   .fz-field:focus-visible {
@@ -311,6 +313,7 @@
     box-shadow: 0 0 0 3px var(--color-expense-soft);
   }
   .fz-field:disabled {
+    border-color: var(--color-border);
     background: var(--color-bg);
     color: var(--color-placeholder);
   }
@@ -340,6 +343,18 @@
   input[type="date"].fz-field::-webkit-date-and-time-value {
     text-align: left;
   }
+  /* Safari nema ::-webkit-calendar-picker-indicator, pa polje za datum ne bi imalo ikonu kao u Chromeu.
+     Ista ikona se crta kao pozadina; klik na polje i dalje otvara Safarijev birač. Uslov hvata samo WebKit (Safari, iOS). */
+  @supports (font: -apple-system-body) and (-webkit-appearance: none) {
+    input[type="date"].fz-field {
+      padding-right: 42px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%237a4d3f'%3E%3Cpath d='M208 32h-24v-8a8 8 0 0 0-16 0v8H88v-8a8 8 0 0 0-16 0v8H48a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16ZM72 48v8a8 8 0 0 0 16 0v-8h80v8a8 8 0 0 0 16 0v-8h24v32H48V48Zm136 160H48V96h160v112Z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 18px;
+      cursor: pointer;
+    }
+  }
   input[type="search"].fz-field::-webkit-search-decoration {
     -webkit-appearance: none;
   }
@@ -366,7 +381,7 @@
     width: 20px;
     height: 20px;
     margin: 0;
-    border: 1.5px solid var(--color-soft-2);
+    border: 1.5px solid var(--color-field-line);
     border-radius: 6px;
     background: var(--color-surface);
     cursor: pointer;
